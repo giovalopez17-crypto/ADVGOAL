@@ -1,92 +1,109 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Metas Pro</title>
+    <title>Meta Generator Pro - Variant B</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .tab-active { @apply bg-white shadow-sm text-indigo-600; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 min-h-screen">
 
-    <!-- Compact Header (Barra de Estado) -->
-    <nav id="top-bar" class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-3 flex justify-between items-center animate-in fade-in slide-in-from-top duration-500">
+    <!-- Top Navigation Bar -->
+    <nav id="top-bar" class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-3 flex justify-between items-center transition-all">
         <div class="flex items-center space-x-4">
-            <span class="text-sm font-bold text-indigo-600">META GENERATOR</span>
+            <span class="text-sm font-bold text-indigo-600 tracking-wider">META GENERATOR PRO</span>
             <div class="h-4 w-[1px] bg-slate-200"></div>
-            <span id="active-filename" class="text-xs text-slate-500 font-medium">Google Sheets Conectado (DATA META HIRES)</span>
+            <span id="active-filename" class="text-xs text-slate-500 font-medium">Google Sheets Connected (DATA META HIRES)</span>
         </div>
         <button onclick="fetchGoogleSheetsData()" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors uppercase tracking-widest flex items-center gap-1.5">
             <svg id="sync-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19M4 4a9.001 9.001 0 0115.356-2m15.356 2v5h-5V8"></path>
             </svg>
-            <span>Sincronizar Datos</span>
+            <span>Sync Live Data</span>
         </button>
     </nav>
 
-    <!-- Main Dashboard -->
-    <main id="app-main" class="max-w-5xl mx-auto px-4 pt-8 pb-20 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <!-- Main Dashboard Layout -->
+    <main id="app-main" class="max-w-5xl mx-auto px-4 pt-8 pb-20 space-y-8">
         
-        <!-- Quick Stats -->
+        <!-- Quick Performance Indicators -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Total Alumnos</p>
-                <p id="stat-total" class="text-2xl font-black text-slate-800">Cargando...</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Students</p>
+                <p id="stat-total" class="text-2xl font-black text-slate-800">Loading...</p>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Coaches Detectados</p>
-                <p id="stat-coaches" class="text-2xl font-black text-slate-800">Cargando...</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Coaches Detected</p>
+                <p id="stat-coaches" class="text-2xl font-black text-slate-800">Loading...</p>
             </div>
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">Alertas de Datos</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Data Alerts</p>
                 <p id="stat-alerts" class="text-2xl font-black text-orange-500">0</p>
             </div>
         </div>
 
-        <!-- Filtros Inteligentes -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <div class="flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-4">
-                <div class="flex-1 space-y-1">
-                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Buscador de Sede / Maestro</label>
-                    <div class="relative">
-                        <input type="text" id="smart-search" placeholder="Escribe el nombre de la sede o del coach..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-                        <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
+        <!-- Intelligent Filtering Control Deck -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+            
+            <!-- Cascading Selection Dropdowns -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Select Country</label>
+                    <select id="dropdown-country" onchange="handleCountryChange(this.value)" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
+                        <option value="ALL">Loading countries...</option>
+                    </select>
                 </div>
-                <div class="flex space-x-2">
-                    <button id="btn-mode-meta" class="h-12 px-6 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg shadow-indigo-200">Meta Contratados</button>
-                    <button id="btn-mode-backup" class="h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200">Trainees Back Up</button>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Select Branch (Sede)</label>
+                    <select id="dropdown-branch" onchange="handleBranchChange(this.value)" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
+                        <option value="ALL">Loading branches...</option>
+                    </select>
                 </div>
-                <div class="flex items-center h-12">
-                     <button id="btn-generate-all" class="h-12 px-6 rounded-xl font-bold text-sm border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition-all">Generar Toda la Sede</button>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Select Coach</label>
+                    <select id="dropdown-coach" onchange="handleCoachChange(this.value)" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
+                        <option value="ALL">Loading coaches...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Mode Controls and Actions -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <button id="btn-mode-meta" onclick="switchMode('meta')" class="flex-1 sm:flex-initial h-12 px-6 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg shadow-indigo-200 transition-all">Meta Hired</button>
+                    <button id="btn-mode-backup" onclick="switchMode('backup')" class="flex-1 sm:flex-initial h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">Trainees Back Up</button>
+                    <button id="btn-mode-removed" onclick="switchMode('removed')" class="flex-1 sm:flex-initial h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">Removed</button>
+                </div>
+                <div class="w-full sm:w-auto">
+                    <button id="btn-generate-all" class="w-full sm:w-auto h-12 px-6 rounded-xl font-bold text-sm border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition-all">Generate Selected Branch</button>
                 </div>
             </div>
         </div>
 
-        <!-- Inconsistencies Alert Area -->
+        <!-- Data Integrity Notification Area -->
         <div id="data-alerts-container" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start space-x-3 text-orange-800">
             <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             <p class="text-sm" id="alerts-text"></p>
         </div>
 
-        <!-- Result Section -->
+        <!-- Dynamic Results Rendering Area -->
         <div id="results-area" class="space-y-6">
-            <!-- Dinámico -->
+            <!-- Populated dynamically via JS -->
         </div>
 
     </main>
 
     <script>
-        // ID público del Spreadsheet de Google
+        // Google Spreadsheet ID Source
         const GOOGLE_SHEET_ID = '1OLKxIKRIGwAm2BLEVohHIl-Tny15jMOLrG_IjH5zvnY';
 
-        // Configuración por defecto mapeada directamente al formato de columnas del CSV exportado
+        // Auto-mapping schema matching CSV columns with standard application properties
         const fieldConfig = {
             coach: { label: 'Coach', aliases: ['COACH'], value: '' },
             sucursal: { label: 'Sede', aliases: ['SUCURSAL'], value: '' },
@@ -98,18 +115,42 @@
             bucket: { label: 'Bucket', aliases: ['BUCKET'], value: '' },
             horario: { label: 'Horario', aliases: ['HORARIO'], value: '' },
             telefono: { label: 'Teléfono', aliases: ['TELÉFONO'], value: '' },
-            areaCode: { label: 'Código de Área', aliases: ['NUMERO AREA'], value: '' }
+            areaCode: { label: 'Código de Área', aliases: ['NUMERO AREA'], value: '' },
+            observaciones: { label: 'Observaciones', aliases: ['OBSERVACIONES'], value: '' },
+            pais: { label: 'País', aliases: ['PAIS', 'PÁIS', 'COUNTRY'], value: '' }
+        };
+
+        // Area codes routing configuration to fallback map countries when missing explicit column
+        const countryCodesMap = {
+            '502': 'Guatemala',
+            '503': 'El Salvador',
+            '504': 'Honduras',
+            '505': 'Nicaragua',
+            '506': 'Costa Rica',
+            '507': 'Panamá',
+            '52': 'México',
+            '57': 'Colombia',
+            '51': 'Perú',
+            '54': 'Argentina',
+            '56': 'Chile',
+            '58': 'Venezuela',
+            '1': 'EE.UU.'
         };
 
         let workbook = null;
         let activeData = [];
-        let viewMode = 'meta'; // 'meta' | 'backup'
+        let viewMode = 'meta'; // 'meta' | 'backup' | 'removed'
 
-        // --- Inicialización automática y carga asíncrona desde Google Sheets ---
-        window.onload = async () => {
-            await fetchGoogleSheetsData();
-        };
+        // Cascade filter records
+        let countriesList = [];
+        let branchesList = [];
+        let coachesList = [];
 
+        let selectedCountry = 'ALL';
+        let selectedBranch = 'ALL';
+        let selectedCoach = 'ALL';
+
+        // Dynamic live fetch from cloud integration
         async function fetchGoogleSheetsData() {
             const syncIcon = document.getElementById('sync-icon');
             const resultsArea = document.getElementById('results-area');
@@ -117,20 +158,19 @@
             if (syncIcon) syncIcon.classList.add('animate-spin');
             if (resultsArea) {
                 resultsArea.innerHTML = `
-                    <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm text-slate-500">
-                        <svg class="w-12 h-12 text-indigo-500 animate-pulse mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm text-slate-500 animate-pulse">
+                        <svg class="w-12 h-12 text-indigo-500 animate-spin mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19M4 4a9.001 9.001 0 0115.356-2m15.356 2v5h-5V8"></path>
                         </svg>
-                        <p class="font-medium text-slate-600">Sincronizando con Google Sheets en tiempo real...</p>
+                        <p class="font-medium text-slate-600">Syncing with Google Sheets in real-time...</p>
                     </div>
                 `;
             }
 
             try {
-                // Exportación directa a formato CSV del Google Sheet de producción
                 const sheetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
                 const response = await fetch(sheetUrl);
-                if (!response.ok) throw new Error('No se pudo establecer conexión de red con el archivo de Google Sheets.');
+                if (!response.ok) throw new Error('Unable to connect to Google Sheets server endpoint.');
                 
                 const csvText = await response.text();
                 workbook = XLSX.read(csvText, { type: 'string' });
@@ -139,13 +179,13 @@
                     processActiveSheet();
                 }
             } catch (error) {
-                console.error("Error al cargar remotamente desde Google Sheets:", error);
+                console.error("Fetch failure:", error);
                 if (resultsArea) {
                     resultsArea.innerHTML = `
                         <div class="p-8 text-center bg-white rounded-2xl border border-red-200 shadow-sm text-red-500">
-                            <p class="font-semibold">Error al conectar con la hoja en línea de Google Sheets</p>
+                            <p class="font-semibold">Google Sheets Connection Error</p>
                             <p class="text-xs text-slate-400 mt-2">${error.message}</p>
-                            <p class="text-xs text-slate-400 mt-1">Por favor verifica que la hoja tenga permisos para que cualquier persona con el enlace pueda leer.</p>
+                            <p class="text-xs text-slate-400 mt-1">Please make sure the document shares public reader permissions.</p>
                         </div>
                     `;
                 }
@@ -163,11 +203,11 @@
                 const headers = Object.keys(activeData[0]);
                 autoMapColumns(headers);
                 updateDashboard();
+                initializeDropdowns();
                 renderResults();
             }
         }
 
-        // --- Auto-mapeo inteligente tras bambalinas ---
         function autoMapColumns(headers) {
             Object.keys(fieldConfig).forEach(key => {
                 const field = fieldConfig[key];
@@ -180,29 +220,140 @@
             });
         }
 
-        // --- Cálculo dinámico de Edad ultra-robusto ---
+        function resolveCountry(row) {
+            const f = fieldConfig;
+            if (f.pais.value && row[f.pais.value]) {
+                return String(row[f.pais.value]).trim();
+            }
+            if (f.areaCode.value && row[f.areaCode.value]) {
+                const cleanArea = String(row[f.areaCode.value]).replace(/\D/g, '');
+                if (countryCodesMap[cleanArea]) {
+                    return countryCodesMap[cleanArea];
+                }
+            }
+            return 'Other';
+        }
+
+        function initializeDropdowns() {
+            const f = fieldConfig;
+            if (!f.sucursal.value || !f.coach.value) return;
+
+            const countriesSet = new Set();
+            const branchesSet = new Set();
+            const coachesSet = new Set();
+
+            activeData.forEach(row => {
+                const country = resolveCountry(row);
+                const branch = row[f.sucursal.value];
+                const coach = row[f.coach.value];
+
+                if (country) countriesSet.add(country);
+                if (branch) branchesSet.add(branch);
+                if (coach) coachesSet.add(coach);
+            });
+
+            countriesList = Array.from(countriesSet).filter(Boolean).sort();
+            branchesList = Array.from(branchesSet).filter(Boolean).sort();
+            coachesList = Array.from(coachesSet).filter(Boolean).sort();
+
+            const countrySelect = document.getElementById('dropdown-country');
+            countrySelect.innerHTML = `<option value="ALL">🌎 All Countries (${countriesList.length})</option>`;
+            countriesList.forEach(c => {
+                countrySelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+
+            populateBranchesDropdown();
+            populateCoachesDropdown();
+        }
+
+        function populateBranchesDropdown() {
+            const f = fieldConfig;
+            const countrySelectVal = document.getElementById('dropdown-country').value;
+            
+            let filteredBranches = new Set();
+            activeData.forEach(row => {
+                const country = resolveCountry(row);
+                const branch = row[f.sucursal.value];
+                if ((countrySelectVal === 'ALL' || country === countrySelectVal) && branch) {
+                    filteredBranches.add(branch);
+                }
+            });
+
+            const branchListFiltered = Array.from(filteredBranches).sort();
+            const branchSelect = document.getElementById('dropdown-branch');
+            branchSelect.innerHTML = `<option value="ALL">🏢 All Branches (${branchListFiltered.length})</option>`;
+            branchListFiltered.forEach(b => {
+                branchSelect.innerHTML += `<option value="${b}">${b}</option>`;
+            });
+        }
+
+        function populateCoachesDropdown() {
+            const f = fieldConfig;
+            const countrySelectVal = document.getElementById('dropdown-country').value;
+            const branchSelectVal = document.getElementById('dropdown-branch').value;
+
+            let filteredCoaches = new Set();
+            activeData.forEach(row => {
+                const country = resolveCountry(row);
+                const branch = row[f.sucursal.value];
+                const coach = row[f.coach.value];
+
+                const matchCountry = (countrySelectVal === 'ALL' || country === countrySelectVal);
+                const matchBranch = (branchSelectVal === 'ALL' || branch === branchSelectVal);
+
+                if (matchCountry && matchBranch && coach) {
+                    filteredCoaches.add(coach);
+                }
+            });
+
+            const coachListFiltered = Array.from(filteredCoaches).sort();
+            const coachSelect = document.getElementById('dropdown-coach');
+            coachSelect.innerHTML = `<option value="ALL">👤 All Coaches (${coachListFiltered.length})</option>`;
+            coachListFiltered.forEach(c => {
+                coachSelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+        }
+
+        function handleCountryChange(val) {
+            selectedCountry = val;
+            selectedBranch = 'ALL';
+            selectedCoach = 'ALL';
+            
+            populateBranchesDropdown();
+            populateCoachesDropdown();
+            renderResults();
+        }
+
+        function handleBranchChange(val) {
+            selectedBranch = val;
+            selectedCoach = 'ALL';
+
+            populateCoachesDropdown();
+            renderResults();
+        }
+
+        function handleCoachChange(val) {
+            selectedCoach = val;
+            renderResults();
+        }
+
         function calculateAge(birthDateValue) {
             if (birthDateValue === null || birthDateValue === undefined) {
-                return 18; // Retorno base por defecto para asegurar inclusión de registros vacíos
+                return 18; 
             }
-            
             let birthYear = 0;
-            const currentYear = new Date().getFullYear(); // 2026
+            const currentYear = new Date().getFullYear();
             
             if (birthDateValue instanceof Date) {
                 birthYear = birthDateValue.getFullYear();
             } else if (typeof birthDateValue === 'number' && birthDateValue < 100000) {
-                // Conversión de código de número de serie de Excel a fecha nativa
                 const dateObj = new Date((birthDateValue - 25569) * 86400000);
                 birthYear = isNaN(dateObj.getTime()) ? 0 : dateObj.getFullYear();
             } else {
                 const strVal = String(birthDateValue).trim();
-                // Manejo de marcadores de posición, celdas vacías o fechas inválidas genéricas
                 if (!strVal || strVal === '' || strVal.startsWith('0000')) {
-                    return 18; // Edad por defecto para forzar su inclusión
+                    return 18;
                 }
-                
-                // Extracción flexible mediante expresión regular sin anclaje de inicio (DD/MM/YYYY o YYYY-MM-DD)
                 const match = strVal.match(/(\d{4})/);
                 if (match) {
                     birthYear = parseInt(match[1], 10);
@@ -212,17 +363,9 @@
                 }
             }
             
-            if (!birthYear || birthYear <= 0) {
-                return 18; // Fallback seguro
-            }
-            
+            if (!birthYear || birthYear <= 0) return 18;
             const age = currentYear - birthYear;
-            
-            // Validación de límites lógicos
-            if (age <= 0 || age > 120) {
-                return 18; // Fallback ante resultados ilógicos o negativos
-            }
-            
+            if (age <= 0 || age > 120) return 18;
             return age;
         }
 
@@ -235,9 +378,8 @@
                 document.getElementById('stat-coaches').textContent = coaches.length;
             }
 
-            // Identificación de inconsistencias/vacíos que requirieron autogestión
             let alerts = 0;
-            if (f.edad.value && f.bucket.value) {
+            if (f.edad.value) {
                 alerts = activeData.filter(r => {
                     const rawVal = r[f.edad.value];
                     if (rawVal === null || rawVal === undefined) return true;
@@ -250,127 +392,182 @@
             const container = document.getElementById('data-alerts-container');
             if (alerts > 0) {
                 container.classList.remove('hidden');
-                document.getElementById('alerts-text').textContent = `Se detectaron ${alerts} alumnos con fecha de nacimiento vacía o genérica. Estos registros han sido autogestionados asignándoles una edad base por defecto (18 años) para garantizar su inclusión y conteo correcto en las métricas globales de meta de contratación.`;
+                document.getElementById('alerts-text').textContent = `Detected ${alerts} trainees missing a valid date of birth. They have been assigned a safe fallback age (18 years) to prevent omission from performance metrics.`;
             } else {
                 container.classList.add('hidden');
             }
         }
 
-        // --- Lógica de Filtros y Resultados ---
-        document.getElementById('smart-search').oninput = renderResults;
-        document.getElementById('btn-mode-meta').onclick = () => switchMode('meta');
-        document.getElementById('btn-mode-backup').onclick = () => switchMode('backup');
-        document.getElementById('btn-generate-all').onclick = generateAllSede;
+        document.getElementById('btn-generate-all').onclick = generateAllBranch;
 
         function switchMode(mode) {
             viewMode = mode;
             const btnMeta = document.getElementById('btn-mode-meta');
             const btnBack = document.getElementById('btn-mode-backup');
+            const btnRemoved = document.getElementById('btn-mode-removed');
+            
+            const inactiveClass = "h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all flex-1 sm:flex-initial";
+            const activeClass = "h-12 px-6 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg shadow-indigo-200 transition-all flex-1 sm:flex-initial";
+
+            btnMeta.className = inactiveClass;
+            btnBack.className = inactiveClass;
+            btnRemoved.className = inactiveClass;
             
             if (mode === 'meta') {
-                btnMeta.className = "h-12 px-6 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg shadow-indigo-200";
-                btnBack.className = "h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200";
-            } else {
-                btnBack.className = "h-12 px-6 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-lg shadow-indigo-200";
-                btnMeta.className = "h-12 px-6 rounded-xl font-bold text-sm bg-slate-100 text-slate-500 hover:bg-slate-200";
+                btnMeta.className = activeClass;
+            } else if (mode === 'backup') {
+                btnBack.className = activeClass;
+            } else if (mode === 'removed') {
+                btnRemoved.className = activeClass;
             }
             renderResults();
         }
 
         function renderResults() {
-            const query = document.getElementById('smart-search').value.toLowerCase();
             const resultsArea = document.getElementById('results-area');
             resultsArea.innerHTML = '';
 
             if (!activeData.length) return;
-
             const f = fieldConfig;
             if (!f.coach.value || !f.sucursal.value) return;
 
-            const allCoaches = [...new Set(activeData.map(r => r[f.coach.value]))].filter(Boolean);
-            const allSedes = [...new Set(activeData.map(r => r[f.sucursal.value]))].filter(Boolean);
+            const countryVal = document.getElementById('dropdown-country').value;
+            const branchVal = document.getElementById('dropdown-branch').value;
+            const coachVal = document.getElementById('dropdown-coach').value;
 
-            const filteredCoaches = allCoaches.filter(c => c.toLowerCase().includes(query));
-            const filteredSedes = allSedes.filter(s => s.toLowerCase().includes(query));
+            let coachesToRender = [];
 
-            if (filteredCoaches.length === 1) {
-                resultsArea.appendChild(createMessageCard(filteredCoaches[0], 'coach'));
-            } else if (filteredSedes.length === 1 && query.length > 2) {
-                resultsArea.innerHTML = `<div class="p-8 text-center bg-white rounded-2xl border border-dashed border-slate-300">
-                    <p class="text-slate-500 font-medium">Se encontró la sede <b>${filteredSedes[0]}</b>. Pulsa el botón "Generar Toda la Sede" para ver todos los coaches.</p>
-                </div>`;
-            } else if (query.length > 1) {
-                const list = [...new Set([...filteredCoaches, ...filteredSedes])].slice(0, 5);
-                resultsArea.innerHTML = `<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Sugerencias</p>
-                    <div class="space-y-1">
-                        ${list.map(i => `<button onclick="document.getElementById('smart-search').value='${i}'; renderResults();" class="block w-full text-left p-2 hover:bg-indigo-50 rounded-lg text-sm font-medium transition-colors">${i}</button>`).join('')}
-                    </div>
-                </div>`;
+            if (coachVal !== 'ALL') {
+                coachesToRender = [coachVal];
+            } else {
+                const coachesSet = new Set();
+                activeData.forEach(row => {
+                    const country = resolveCountry(row);
+                    const branch = row[f.sucursal.value];
+                    const coach = row[f.coach.value];
+
+                    const matchCountry = (countryVal === 'ALL' || country === countryVal);
+                    const matchBranch = (branchVal === 'ALL' || branch === branchVal);
+
+                    if (matchCountry && matchBranch && coach) {
+                        coachesSet.add(coach);
+                    }
+                });
+                coachesToRender = Array.from(coachesSet).sort();
             }
-        }
 
-        function generateAllSede() {
-            const query = document.getElementById('smart-search').value.toLowerCase();
-            const f = fieldConfig;
-            const resultsArea = document.getElementById('results-area');
-            resultsArea.innerHTML = '<div class="grid grid-cols-1 gap-6"></div>';
-            const grid = resultsArea.querySelector('div');
-
-            const allSedes = [...new Set(activeData.map(r => r[f.sucursal.value]))].filter(Boolean);
-            const matchSede = allSedes.find(s => s.toLowerCase().includes(query));
-
-            if (!matchSede) {
-                resultsArea.innerHTML = '<p class="text-center py-10 text-slate-400">Primero escribe el nombre de una sede en el buscador.</p>';
+            if (coachesToRender.length === 0) {
+                resultsArea.innerHTML = `
+                    <div class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500">
+                        <p class="font-medium">No coaches found with current active filter settings.</p>
+                    </div>
+                `;
                 return;
             }
 
-            const coachesInSede = [...new Set(activeData.filter(r => r[f.sucursal.value] === matchSede).map(r => r[f.coach.value]))].filter(Boolean).sort();
-            
-            coachesInSede.forEach(coach => {
-                grid.appendChild(createMessageCard(coach, 'coach'));
+            if (coachesToRender.length === 1) {
+                resultsArea.appendChild(createMessageCard(coachesToRender[0]));
+            } else {
+                resultsArea.innerHTML = `
+                    <div class="p-8 text-center bg-white rounded-2xl border border-dashed border-slate-300">
+                        <p class="text-slate-500 font-medium">Detected <b>${coachesToRender.length} coaches</b> matching Country/Branch criteria.</p>
+                        <p class="text-xs text-slate-400 mt-1">Select a specific coach above or click "Generate Selected Branch" to render all cards in bulk.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function generateAllBranch() {
+            const resultsArea = document.getElementById('results-area');
+            const f = fieldConfig;
+            const countryVal = document.getElementById('dropdown-country').value;
+            const branchVal = document.getElementById('dropdown-branch').value;
+
+            if (branchVal === 'ALL') {
+                resultsArea.innerHTML = `
+                    <div class="p-6 text-center bg-orange-50 border border-orange-200 text-orange-800 rounded-xl">
+                        Please select a <b>specific Branch (Sede)</b> in the dropdown list to generate all coach messages.
+                    </div>
+                `;
+                return;
+            }
+
+            resultsArea.innerHTML = '<div class="grid grid-cols-1 gap-6"></div>';
+            const grid = resultsArea.querySelector('div');
+
+            const coachesInBranch = [...new Set(
+                activeData.filter(row => {
+                    const country = resolveCountry(row);
+                    const matchCountry = (countryVal === 'ALL' || country === countryVal);
+                    return matchCountry && row[f.sucursal.value] === branchVal;
+                }).map(row => row[f.coach.value])
+            )].filter(Boolean).sort();
+
+            coachesInBranch.forEach(coach => {
+                grid.appendChild(createMessageCard(coach));
             });
         }
 
-        function createMessageCard(entityName, type) {
+        function createMessageCard(entityName) {
             const f = fieldConfig;
             const students = activeData.filter(r => r[f.coach.value] === entityName);
             
-            let filteredList = [];
+            const mainPriorityList = []; 
+            const removedList = [];       
+            const backupList = [];        
+
             let totalPossible = 0;
             let currentHired = 0;
 
+            students.forEach(s => {
+                const bucket = String(s[f.bucket.value] || '').toLowerCase().replace(/\s/g, '');
+                const isAdvanced = bucket.includes('2mesesomás');
+                const age = calculateAge(s[f.edad.value]);
+                const isAdult = age >= 18;
+                const hiredStatus = String(s[f.hired.value] || '').toUpperCase().trim();
+                const fodo = String(s[f.fodo.value] || '').toLowerCase().trim();
+                const isFodoValid = ['aplica a meta', 'no definido'].includes(fodo);
+
+                const obsText = String(s[f.observaciones.value] || '').toUpperCase().trim();
+                const isRemoved = obsText.includes('REMOVIDO');
+
+                // Sort Meta Criteria and Removed Lists (Variant B structure)
+                if (isAdvanced && isAdult && isFodoValid) {
+                    if (isRemoved) {
+                        removedList.push(s);
+                    } else {
+                        totalPossible++;
+                        if (hiredStatus === 'HIRED') {
+                            currentHired++;
+                        }
+                        if (hiredStatus === 'NOT HIRED') {
+                            mainPriorityList.push(s);
+                        }
+                    }
+                }
+
+                // Backup logic
+                const isNew = bucket.includes('0-2meses');
+                const days = parseInt(s[f.tiempoNivel.value]) || 0;
+                if (isNew && days > 30) {
+                    backupList.push(s);
+                }
+            });
+
+            let filteredList = [];
+            let goalNumber = 0;
+
             if (viewMode === 'meta') {
-                filteredList = students.filter(s => {
-                    const bucket = String(s[f.bucket.value] || '').toLowerCase().replace(/\s/g, '');
-                    const isAdvanced = bucket.includes('2mesesomás');
-                    
-                    // Condición dinámica de edad >= 18 mediante la resta del año de nacimiento
-                    const age = calculateAge(s[f.edad.value]);
-                    const isAdult = age >= 18;
-                    
-                    const hiredStatus = String(s[f.hired.value] || '').toUpperCase().trim();
-                    const isNotHired = hiredStatus === 'NOT HIRED';
-                    const fodo = String(s[f.fodo.value] || '').toLowerCase().trim();
-                    const isFodoValid = ['aplica a meta', 'no definido'].includes(fodo);
-
-                    if (isAdvanced && isAdult && isFodoValid) totalPossible++;
-                    if (isAdvanced && isAdult && hiredStatus === 'HIRED') currentHired++;
-
-                    return isAdvanced && isAdult && isNotHired && isFodoValid;
-                });
-            } else {
-                filteredList = students.filter(s => {
-                    const bucket = String(s[f.bucket.value] || '').toLowerCase().replace(/\s/g, '');
-                    const isNew = bucket.includes('0-2meses');
-                    const days = parseInt(s[f.tiempoNivel.value]) || 0;
-                    return isNew && days > 30;
-                });
+                filteredList = mainPriorityList;
+                goalNumber = Math.round(mainPriorityList.length * 0.8);
+            } else if (viewMode === 'backup') {
+                filteredList = backupList;
+            } else if (viewMode === 'removed') {
+                filteredList = removedList;
+                goalNumber = Math.round(mainPriorityList.length * 0.7); // 70% Net Goal Adjustment for active roster
             }
 
-            const goalNumber = Math.round(filteredList.length * 0.8);
-            const message = buildMessage(entityName, filteredList, goalNumber);
-
+            const message = buildMessage(entityName, filteredList, goalNumber, removedList, mainPriorityList.length);
             const card = document.createElement('div');
             card.className = "bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500";
             
@@ -381,12 +578,14 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                         <div>
                             <h3 class="text-xl font-black text-slate-800">${entityName}</h3>
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">${viewMode === 'meta' ? 'Meta de Contratación' : 'Seguimiento de Backups'}</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">
+                                ${viewMode === 'meta' ? 'Meta Hired' : (viewMode === 'backup' ? 'Trainees Back Up' : 'Excluded Trainees')}
+                            </p>
                         </div>
                         <div class="flex items-center space-x-2">
                              <button onclick="copyMsg(this)" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                <span>Copiar</span>
+                                <span>Copy</span>
                              </button>
                             <a href="https://wa.me/?text=${encodeURIComponent(message)}" target="_blank" class="bg-green-500 text-white p-2 rounded-xl hover:bg-green-600 transition-all flex items-center justify-center">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
@@ -397,12 +596,24 @@
                     ${viewMode === 'meta' ? `
                     <div class="mb-6">
                         <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
-                            <span>Avance Hacia Meta</span>
-                            <span>${currentHired} / ${currentHired + goalNumber} contratados</span>
+                            <span>Goal Hiring Progress</span>
+                            <span>${currentHired} / ${currentHired + goalNumber} hired</span>
                         </div>
                         <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                             <div class="bg-indigo-600 h-full transition-all duration-1000" style="width: ${progressPercent}%"></div>
                         </div>
+                    </div>
+                    ` : ''}
+
+                    ${viewMode === 'removed' ? `
+                    <div class="mb-6 bg-rose-50 border border-rose-100 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-rose-500 uppercase block tracking-wider">Ajusted Challenge Target (Variant B)</span>
+                            <span class="text-xs text-rose-700 font-medium">Excluded students removed. Goal re-calibrated at 70% of active pool.</span>
+                        </div>
+                        <span class="bg-rose-500 text-white text-xs font-black px-3 py-1.5 rounded-lg">
+                            ${Math.round(mainPriorityList.length * 0.7)} Goal Target
+                        </span>
                     </div>
                     ` : ''}
 
@@ -412,14 +623,16 @@
 
                     <div class="mt-4 pt-4 border-t border-slate-100 flex items-center text-[10px] font-bold text-slate-400 uppercase">
                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        ${filteredList.length} Alumnos identificados
+                        ${filteredList.length} Students Selected
                     </div>
                 </div>
             `;
             return card;
         }
 
-        function buildMessage(coach, list, goal) {
+        function buildMessage(coach, list, goal, removedList = [], validMetaCount = 0) {
+            const f = fieldConfig;
+            
             if (viewMode === 'meta') {
                 let msg = `¡Hola, ${coach}! 🚀\n\n`;
                 msg += `¡Vamos por la meta de este mes! El reto es lograr la contratación de *${goal}* de tus estudiantes más avanzados.\n\n`;
@@ -427,16 +640,32 @@
                 msg += formatStudentList(list);
                 msg += `\nSi quieres anticiparte, avísame y te mando la lista de los que están a punto de cumplir los 2 meses. 😉`;
                 return msg;
-            } else {
+            } else if (viewMode === 'backup') {
                 let msg = `¡Hola, ${coach}! 🚀\n\n`;
                 msg += `Aquí tienes la lista de *Trainees Back Up*. Son estudiantes con más de 30 días en el bucket "0-2 meses".\n\n`;
                 msg += `¡Es un excelente momento para darles seguimiento y asegurar su éxito!\n\n`;
                 msg += formatStudentList(list);
                 return msg;
+            } else if (viewMode === 'removed') {
+                if (removedList.length === 0) {
+                    return `Hola ${coach}, no se encontraron alumnos marcados como REMOVIDO para tu cuenta.`;
+                }
+                
+                let listInfo = '';
+                if (removedList.length === 1) {
+                    const s = removedList[0];
+                    listInfo = `el trainee *${s[f.nombre.value]}* del horario *${s[f.horario.value] || 'No Definido'}*`;
+                } else {
+                    listInfo = removedList.map(s => `*${s[f.nombre.value]}* del horario *${s[f.horario.value] || 'No Definido'}*`).join(' y ');
+                }
+
+                let msg = `Hola ${coach}, te comento que ${listInfo} fue removido de la meta.\n\n`;
+                msg += `Tu meta quedaría así:\n`;
+                msg += `Total de trainees que sí aplican a la meta: ${validMetaCount} (Reto para el 70%: ${Math.round(validMetaCount * 0.7)})`;
+                return msg;
             }
         }
 
-        // --- Formateo y Generación Dinámica de Enlaces con Código de Área ---
         function formatStudentList(list) {
             const f = fieldConfig;
             const grouped = list.reduce((acc, s) => {
@@ -451,10 +680,8 @@
                 body += `*${h}*\n`;
                 grouped[h].forEach(s => {
                     const phone = String(s[f.telefono.value] || '').replace(/\D/g, '');
-                    
-                    // Extrae el código de área del estudiante desde la columna "NUMERO AREA"
                     const areaCode = String(s[f.areaCode.value] || '').replace(/\D/g, '');
-                    const countryCode = areaCode || '502'; // En caso de que esté ausente o vacío
+                    const countryCode = areaCode || '502'; 
                     
                     const wa = phone ? ` - https://wa.me/${countryCode}${phone}` : '';
                     body += `• ${s[f.nombre.value]} (${s[f.tiempoNivel.value]} d)${wa}\n`;
@@ -475,7 +702,7 @@
             
             const span = btn.querySelector('span');
             const original = span.textContent;
-            span.textContent = '¡Hecho!';
+            span.textContent = 'Copied!';
             btn.classList.replace('bg-indigo-600', 'bg-green-600');
             setTimeout(() => {
                 span.textContent = original;
