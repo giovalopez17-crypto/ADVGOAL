@@ -150,6 +150,11 @@
         let selectedBranch = 'ALL';
         let selectedCoach = 'ALL';
 
+        // Initialize automatically on load
+        window.onload = async () => {
+            await fetchGoogleSheetsData();
+        };
+
         // Dynamic live fetch from cloud integration
         async function fetchGoogleSheetsData() {
             const syncIcon = document.getElementById('sync-icon');
@@ -167,25 +172,63 @@
                 `;
             }
 
-            try {
-                const sheetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
-                const response = await fetch(sheetUrl);
-                if (!response.ok) throw new Error('Unable to connect to Google Sheets server endpoint.');
-                
-                const csvText = await response.text();
-                workbook = XLSX.read(csvText, { type: 'string' });
-                
-                if (workbook.SheetNames.length > 0) {
-                    processActiveSheet();
+            // Dual URL failover array to bypass Google Auth/CORS redirects securely
+            const urls = [
+                `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`,
+                `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv`
+            ];
+
+            let csvText = null;
+            let lastError = null;
+
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
+                    const text = await response.text();
+                    
+                    // Validate that the output is actually data and not a Google Redirect/Login HTML shell
+                    if (text.includes('<!doctype html') || text.includes('<html') || text.includes('Google Accounts')) {
+                        throw new Error("Received HTML redirect instead of data. Endpoint may require gviz authentication bypass.");
+                    }
+                    
+                    csvText = text;
+                    break; // Exit loop on successful retrieval
+                } catch (error) {
+                    console.warn(`Endpoint connection failed: ${url}`, error);
+                    lastError = error;
                 }
-            } catch (error) {
-                console.error("Fetch failure:", error);
+            }
+
+            if (!csvText) {
                 if (resultsArea) {
                     resultsArea.innerHTML = `
                         <div class="p-8 text-center bg-white rounded-2xl border border-red-200 shadow-sm text-red-500">
                             <p class="font-semibold">Google Sheets Connection Error</p>
+                            <p class="text-xs text-slate-400 mt-2">${lastError ? lastError.message : 'Unknown Network Error'}</p>
+                            <p class="text-xs text-slate-400 mt-1">Please make sure the Google Sheet is shared as "Anyone with the link can view".</p>
+                            <button onclick="fetchGoogleSheetsData()" class="mt-4 px-4 py-2 bg-indigo-600 text-white font-bold text-xs rounded-xl hover:bg-indigo-700 transition-all">
+                                Try Sync Again
+                            </button>
+                        </div>
+                    `;
+                }
+                if (syncIcon) syncIcon.classList.remove('animate-spin');
+                return;
+            }
+
+            try {
+                workbook = XLSX.read(csvText, { type: 'string' });
+                if (workbook.SheetNames.length > 0) {
+                    processActiveSheet();
+                }
+            } catch (error) {
+                console.error("Data parse failure:", error);
+                if (resultsArea) {
+                    resultsArea.innerHTML = `
+                        <div class="p-8 text-center bg-white rounded-2xl border border-red-200 shadow-sm text-red-500">
+                            <p class="font-semibold">Parser Error</p>
                             <p class="text-xs text-slate-400 mt-2">${error.message}</p>
-                            <p class="text-xs text-slate-400 mt-1">Please make sure the document shares public reader permissions.</p>
                         </div>
                     `;
                 }
@@ -202,12 +245,17 @@
             if (activeData.length > 0) {
                 const headers = Object.keys(activeData[0]);
                 autoMapColumns(headers);
+                
+                // Force the country configuration to strictly use Column A (the first column)
+                fieldConfig.pais.value = headers[0] || '';
+                
                 updateDashboard();
                 initializeDropdowns();
                 renderResults();
             }
         }
 
+        // Auto-map column headers
         function autoMapColumns(headers) {
             Object.keys(fieldConfig).forEach(key => {
                 const field = fieldConfig[key];
@@ -220,20 +268,20 @@
             });
         }
 
+        // Resolve the student's country strictly from Column A (first column)
         function resolveCountry(row) {
             const f = fieldConfig;
             if (f.pais.value && row[f.pais.value]) {
-                return String(row[f.pais.value]).trim();
-            }
-            if (f.areaCode.value && row[f.areaCode.value]) {
-                const cleanArea = String(row[f.areaCode.value]).replace(/\D/g, '');
-                if (countryCodesMap[cleanArea]) {
-                    return countryCodesMap[cleanArea];
-                }
+                const rawVal = String(row[f.pais.value]).trim().toLowerCase();
+                if (rawVal.includes('guatemala')) return 'Guatemala';
+                if (rawVal.includes('nicaragua')) return 'Nicaragua';
+                if (rawVal.includes('salvador')) return 'El Salvador';
+                if (rawVal.includes('online')) return 'Online';
             }
             return 'Other';
         }
 
+        // Initialize cascading dropdowns with strict Column A country filter
         function initializeDropdowns() {
             const f = fieldConfig;
             if (!f.sucursal.value || !f.coach.value) return;
@@ -247,14 +295,16 @@
                 const branch = row[f.sucursal.value];
                 const coach = row[f.coach.value];
 
-                if (country) countriesSet.add(country);
+                if (country && country !== 'Other') countriesSet.add(country);
                 if (branch) branchesSet.add(branch);
                 if (coach) coachesSet.add(coach);
             });
 
-            countriesList = Array.from(countriesSet).filter(Boolean).sort();
-            branchesList = Array.from(branchesSet).filter(Boolean).sort();
-            coachesList = Array.from(coachesSet).filter(Boolean).sort();
+            // Restrict dropdown selection exclusively to the allowed list from Column A
+            const allowedCountries = ['Guatemala', 'Nicaragua', 'El Salvador', 'Online'];
+            countriesList = Array.from(countriesSet)
+                .filter(c => allowedCountries.includes(c))
+                .sort();
 
             const countrySelect = document.getElementById('dropdown-country');
             countrySelect.innerHTML = `<option value="ALL">🌎 All Countries (${countriesList.length})</option>`;
@@ -431,9 +481,13 @@
             const f = fieldConfig;
             if (!f.coach.value || !f.sucursal.value) return;
 
-            const countryVal = document.getElementById('dropdown-country').value;
-            const branchVal = document.getElementById('dropdown-branch').value;
-            const coachVal = document.getElementById('dropdown-coach').value;
+            const countrySelect = document.getElementById('dropdown-country');
+            const branchSelect = document.getElementById('dropdown-branch');
+            const coachSelect = document.getElementById('dropdown-coach');
+
+            const countryVal = countrySelect ? countrySelect.value : 'ALL';
+            const branchVal = branchSelect ? branchSelect.value : 'ALL';
+            const coachVal = coachSelect ? coachSelect.value : 'ALL';
 
             let coachesToRender = [];
 
